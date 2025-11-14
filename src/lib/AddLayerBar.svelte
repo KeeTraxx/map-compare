@@ -20,7 +20,6 @@
     $effect(() => {
         // Notify parent whenever visible layers change
         onVisibleLayersChange?.(visibleLayers);
-        console.log(visibleLayers);
     });
 
     function toggleLayer(layer: Layer) {
@@ -74,5 +73,6 @@
     ul {
         margin: 0;
         padding: 0;
+        max-width: 30em;
     }
 </style>

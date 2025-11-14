@@ -4,19 +4,8 @@
     import type { Layer } from "./lib/types";
 
     let layers: Layer[] = $state([]);
-
-    $effect(() => {
-      console.log('changelayers', $state.snapshot(layers));
-    })
-
 </script>
 <Map {layers}></Map>
 <aside>
   <AddLayerBar onVisibleLayersChange={(newLayers) => layers = newLayers}></AddLayerBar>
 </aside>
-
-<style>
-  main {
-    display: flex;
-  }
-</style>

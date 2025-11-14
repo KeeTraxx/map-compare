@@ -45,4 +45,6 @@
     }
 </script>
 
+<svelte:window onresize={() => drawTiles(gEl, projection, zoomDelta)} />
+
 <g bind:this={gEl}> </g>

@@ -4,11 +4,12 @@
     import { rewind, buffer, point } from "@turf/turf";
     import WTMSLayer from "./WTMSLayer.svelte";
     import type { Layer } from "./types";
+    import NerdStats from "./NerdStats.svelte";
 
     let {layers} : {layers: Layer[]} = $props();
 
     let svgEl: SVGElement;
-    let projection = d3
+    let projection = $state(d3
         .geoMercator()
         .fitSize(
             [window.innerWidth, window.innerHeight],
@@ -16,12 +17,15 @@
                 buffer(point([7.447798611764711, 46.947948827484964]), 500, { units: "meters" })!,
                 { reverse: true }
             )
-        );
+        ));
 
     let zoom = d3.zoom<SVGElement, unknown>().on("zoom", (ev) => {
         const transform = ev.transform;
-        projection = projection.scale(transform.k).translate([transform.x, transform.y]);
-        console.log("zoomed");
+        // Create new projection to trigger Svelte reactivity
+        projection = d3
+            .geoMercator()
+            .scale(transform.k)
+            .translate([transform.x, transform.y]);
     });
 
     onMount(() => {
@@ -37,21 +41,36 @@
 </script>
 
 <svg bind:this={svgEl}>
+    <g style="opacity: 0.3">
     <WTMSLayer
         {projection}
         zoomDelta={-2}
         urlFunction={(x, y, z) =>
-            `https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/${z}/${x}/${y}.jpeg`}
+            `https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/${z}/${x}/${y}.jpeg`}
     />
 
     <WTMSLayer
         {projection}
         urlFunction={(x, y, z) =>
-            `https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/${z}/${x}/${y}.jpeg`}
+            `https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/${z}/${x}/${y}.jpeg`}
     />
+    </g>
+
+    {#each layers as layer}
+        <WTMSLayer {projection}
+        urlFunction={(x,y,z) => layer.ResourceURL["@_template"]
+            .replace("{Time}", layer.Dimension.Default)
+            .replace("{TileMatrix}", z.toString())
+            .replace("{TileCol}", x.toString())
+            .replace("{TileRow}", y.toString())
+        }
+        />
+    {/each}
 </svg>
+<NerdStats {projection}></NerdStats>
 
 <style lang="scss">
+    // "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.landeskarte-farbe-10/default/{Time}/3857/{TileMatrix}/{TileCol}/{TileRow}.png"
     svg {
         flex: 1 1 240px;
     }

@@ -2,9 +2,11 @@ body {
     display: flex;
     position: fixed;
     inset: 0;
+
+    > main {
+    display: flex;
+    flex: 1 1 240px;
+    padding-block: 0;
+    }
 }
 
-#app, main, svg {
-    flex: 240px 1 1;
-    display: flex;
-}

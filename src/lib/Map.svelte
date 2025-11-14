@@ -3,9 +3,9 @@
     import { onMount } from "svelte";
     import { rewind, buffer, point } from "@turf/turf";
     import WTMSLayer from "./WTMSLayer.svelte";
+    import type { Layer } from "./types";
 
-    let width = 0;
-    let height = 0;
+    let {layers} : {layers: Layer[]} = $props();
 
     let svgEl: SVGElement;
     let projection = d3
@@ -13,14 +13,10 @@
         .fitSize(
             [window.innerWidth, window.innerHeight],
             rewind(
-                buffer(point([7.447798611764711, 46.947948827484964]), 50, { units: "meters" })!,
+                buffer(point([7.447798611764711, 46.947948827484964]), 500, { units: "meters" })!,
                 { reverse: true }
             )
         );
-
-    //const url = (x, y, z) => `https://tile.opentopomap.org/${z}/${x}/${y}.png`;
-    // const url = (x, y, z) =>
-    //     `https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/${z}/${x}/${y}.jpeg`;
 
     let zoom = d3.zoom<SVGElement, unknown>().on("zoom", (ev) => {
         const transform = ev.transform;
@@ -40,7 +36,7 @@
     });
 </script>
 
-<svg bind:this={svgEl} bind:clientWidth={width} bind:clientHeight={height}>
+<svg bind:this={svgEl}>
     <WTMSLayer
         {projection}
         zoomDelta={-2}
@@ -54,3 +50,9 @@
             `https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/${z}/${x}/${y}.jpeg`}
     />
 </svg>
+
+<style lang="scss">
+    svg {
+        flex: 1 1 240px;
+    }
+</style>

@@ -56,7 +56,7 @@
     {:else}
         <ul>
         {#each visibleLayers as result}
-            <SearchResult {result} onToggle={() => toggleLayer(result) showAbstract={false}}></SearchResult>
+            <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={false}></SearchResult>
         {/each}
         </ul>
     {/if}

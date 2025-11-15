@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Layer } from "./types";
 
-    let { result, showAbstract, onToggle }: { result: Layer; showAbstract: boolean, onToggle: () => void } = $props();
+    let { result, showAbstract = true, onToggle }: { result: Layer; showAbstract: boolean, onToggle: () => void } = $props();
 </script>
 <li>
     <div class="left">

@@ -49,13 +49,13 @@
     <input type="text" placeholder="Search for layers..." bind:value={search} />
     {#if searchResults.length > 0}
         <ul>
-        {#each searchResults as result}
-            <SearchResult {result} onToggle={() => toggleLayer(result)}></SearchResult>
+        {#each searchResults as result (result['ows:Identifier'])}
+            <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={true}></SearchResult>
         {/each}
         </ul>
     {:else}
         <ul>
-        {#each visibleLayers as result}
+        {#each visibleLayers as result (result['ows:Identifier'])}
             <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={false}></SearchResult>
         {/each}
         </ul>

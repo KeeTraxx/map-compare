@@ -5,11 +5,12 @@
   import WTMSLayer from './WTMSLayer.svelte';
   import type { Layer } from './types';
   import NerdStats from './NerdStats.svelte';
+  import InteractionLayer from './InteractionLayer.svelte';
 
   let { layers }: { layers: Layer[] } = $props();
 
   let svgEl: SVGElement;
-  let projection = $state(
+  let projection: d3.GeoProjection = $state(
     d3.geoMercator().fitSize(
       [window.innerWidth, window.innerHeight],
       rewind(
@@ -19,13 +20,23 @@
         { reverse: true }
       )
     )
-  );
+  )!;
 
   let zoom = d3.zoom<SVGElement, unknown>().on('zoom', (ev) => {
     const transform = ev.transform;
     // Create new projection to trigger Svelte reactivity
     projection = d3.geoMercator().scale(transform.k).translate([transform.x, transform.y]);
   });
+
+  function updateProjection(newProjection: d3.GeoProjection) {
+    projection = newProjection;
+    d3.select<SVGElement, unknown>(svgEl).call(
+      zoom.transform,
+      d3.zoomIdentity
+        .translate(projection.translate()[0], projection.translate()[1])
+        .scale(projection.scale())
+    );
+  }
 
   onMount(() => {
     d3.select<SVGElement, unknown>(svgEl)
@@ -41,13 +52,6 @@
 
 <svg bind:this={svgEl}>
   <g style="opacity: 0.3">
-    <WTMSLayer
-      {projection}
-      zoomDelta={-2}
-      urlFunction={(x, y, z) =>
-        `https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/${z}/${x}/${y}.jpeg`}
-    />
-
     <WTMSLayer
       {projection}
       urlFunction={(x, y, z) =>
@@ -66,6 +70,7 @@
           .replace('{TileRow}', y.toString())}
     />
   {/each}
+  <InteractionLayer {projection} {layers} {updateProjection} />
 </svg>
 <NerdStats {projection}></NerdStats>
 
@@ -81,7 +86,6 @@
 </ul>
 
 <style lang="scss">
-  // "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.landeskarte-farbe-10/default/{Time}/3857/{TileMatrix}/{TileCol}/{TileRow}.png"
   svg {
     flex: 1 1 240px;
   }

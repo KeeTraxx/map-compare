@@ -3,11 +3,11 @@
   import type { Layer } from './types';
   import SearchResult from './SearchResult.svelte';
 
-  let {
-    onVisibleLayersChange,
-  }: {
+  interface AddLayerBarProps {
     onVisibleLayersChange?: (layers: Layer[]) => void;
-  } = $props();
+  }
+
+  let { onVisibleLayersChange }: AddLayerBarProps = $props();
 
   let search: string = $state('');
   let layerData: Layer[] = $state([]);
@@ -50,14 +50,26 @@
   {#if searchResults.length > 0}
     <ul>
       {#each searchResults as result (result['ows:Identifier'])}
-        <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={true}
+        <SearchResult
+          {result}
+          onToggle={() => {
+            toggleLayer(result);
+            searchResults = [];
+          }}
+          showAbstract={true}
         ></SearchResult>
       {/each}
     </ul>
   {:else}
     <ul>
       {#each visibleLayers as result (result['ows:Identifier'])}
-        <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={false}
+        <SearchResult
+          {result}
+          onToggle={() => {
+            toggleLayer(result);
+            searchResults = [];
+          }}
+          showAbstract={false}
         ></SearchResult>
       {/each}
     </ul>

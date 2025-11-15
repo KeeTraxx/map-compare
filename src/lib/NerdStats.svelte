@@ -1,23 +1,10 @@
 <script lang="ts">
   import * as d3 from 'd3';
-  import { wgs84ToLv95 } from './conversion';
+  import { screenToCoords } from './conversion';
   let { projection }: { projection: d3.GeoProjection } = $props();
 
   let center = $derived.by(() => {
-    const coords = projection.invert?.([window.innerWidth / 2, window.innerHeight / 2]);
-    if (!coords) {
-      return null;
-    }
-    const [lon, lat] = coords;
-    const [x, y] = wgs84ToLv95([lon, lat]);
-    return coords
-      ? {
-          lon,
-          lat,
-          x,
-          y,
-        }
-      : null;
+    return screenToCoords(projection, window.innerWidth / 2, window.innerHeight / 2);
   });
 </script>
 
@@ -25,8 +12,8 @@
   {#if center}
     <div>Lon: {center.lon.toFixed(6)}</div>
     <div>Lat: {center.lat.toFixed(6)}</div>
-    <div>LV95 X: {center.x.toFixed(6)}</div>
-    <div>LV95 Y: {center.y.toFixed(6)}</div>
+    <div>LV95 X: {center.lv95x.toFixed(6)}</div>
+    <div>LV95 Y: {center.lv95y.toFixed(6)}</div>
   {/if}
 </div>
 

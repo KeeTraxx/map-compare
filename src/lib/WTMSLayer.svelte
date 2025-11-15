@@ -2,6 +2,12 @@
   import * as d3tile from 'd3-tile';
   import * as d3 from 'd3';
 
+  interface WTMSLayerProps {
+    projection: d3.GeoProjection;
+    urlFunction: (x: number, y: number, z: number) => string;
+    zoomDelta?: number;
+  }
+
   const NO_DATA_SVG =
     'data:image/svg+xml,' +
     encodeURIComponent(`
@@ -13,15 +19,7 @@
 
   let gEl: SVGGElement;
 
-  let {
-    projection,
-    urlFunction,
-    zoomDelta = 0,
-  }: {
-    projection: d3.GeoProjection;
-    urlFunction: (x: number, y: number, z: number) => string;
-    zoomDelta?: number;
-  } = $props();
+  let { projection, urlFunction, zoomDelta = 0 }: WTMSLayerProps = $props();
 
   let tile = d3tile.tile().tileSize(256).maxNativeZoom(19).clampX(false);
 

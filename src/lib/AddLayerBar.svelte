@@ -3,19 +3,21 @@
     import type { Layer } from './types';
     import SearchResult from './SearchResult.svelte';
 
-    let { onVisibleLayersChange }: {
+    let {
+        onVisibleLayersChange,
+    }: {
         onVisibleLayersChange?: (layers: Layer[]) => void;
     } = $props();
 
-    let search: string = $state("");
+    let search: string = $state('');
     let layerData: Layer[] = $state([]);
     let searchResults: Layer[] = $derived(
-        search.trim() === ""
+        search.trim() === ''
             ? []
-            : layerData.filter(l => l['ows:Title']?.toLowerCase().includes(search.toLowerCase()))
+            : layerData.filter((l) => l['ows:Title']?.toLowerCase().includes(search.toLowerCase()))
     );
 
-    let visibleLayers: Layer[] = $derived(layerData.filter(l => l.visible));
+    let visibleLayers: Layer[] = $derived(layerData.filter((l) => l.visible));
 
     $effect(() => {
         // Notify parent whenever visible layers change
@@ -23,7 +25,7 @@
     });
 
     function toggleLayer(layer: Layer) {
-        const index = layerData.findIndex(l => l === layer);
+        const index = layerData.findIndex((l) => l === layer);
         if (index !== -1) {
             layerData[index].visible = !layerData[index].visible;
             // Trigger reactivity by reassigning the array
@@ -33,31 +35,31 @@
 
     async function load() {
         const parser = new XMLParser({
-            ignoreAttributes: false
+            ignoreAttributes: false,
         });
-        const resp = await fetch("https://wmts.geo.admin.ch/EPSG/3857/1.0.0/WMTSCapabilities.xml")
+        const resp = await fetch('https://wmts.geo.admin.ch/EPSG/3857/1.0.0/WMTSCapabilities.xml');
         const xmlString = await resp.text();
         const xml = parser.parse(xmlString);
-        layerData = xml.Capabilities.Contents.Layer.map((d:Layer) => ({...d, visible: false}));
+        layerData = xml.Capabilities.Contents.Layer.map((d: Layer) => ({ ...d, visible: false }));
     }
     load();
-
-
 </script>
 
 <div>
     <input type="text" placeholder="Search for layers..." bind:value={search} />
     {#if searchResults.length > 0}
         <ul>
-        {#each searchResults as result (result['ows:Identifier'])}
-            <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={true}></SearchResult>
-        {/each}
+            {#each searchResults as result (result['ows:Identifier'])}
+                <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={true}
+                ></SearchResult>
+            {/each}
         </ul>
     {:else}
         <ul>
-        {#each visibleLayers as result (result['ows:Identifier'])}
-            <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={false}></SearchResult>
-        {/each}
+            {#each visibleLayers as result (result['ows:Identifier'])}
+                <SearchResult {result} onToggle={() => toggleLayer(result)} showAbstract={false}
+                ></SearchResult>
+            {/each}
         </ul>
     {/if}
 </div>
@@ -69,7 +71,7 @@
         top: 1em;
         display: flex;
         flex-direction: column;
-        box-shadow: 2px 2px 5px 5px rgba(0,0,0,0.3);
+        box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.3);
     }
 
     input {

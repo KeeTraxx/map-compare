@@ -1,21 +1,32 @@
 <script lang="ts">
     import * as d3 from 'd3';
-    let {projection} : {projection: d3.GeoProjection} = $props();
+    import { wgs84ToLv95 } from './conversion';
+    let { projection }: { projection: d3.GeoProjection } = $props();
 
     let center = $derived.by(() => {
-        const [x, y] = projection.translate();
         const coords = projection.invert?.([window.innerWidth / 2, window.innerHeight / 2]);
-        return coords ? {
-            lon: coords[0].toFixed(6),
-            lat: coords[1].toFixed(6)
-        } : null;
+        if (!coords) {
+            return null;
+        }
+        const [lon, lat] = coords;
+        const [x, y] = wgs84ToLv95([lon, lat]);
+        return coords
+            ? {
+                  lon,
+                  lat,
+                  x,
+                  y,
+              }
+            : null;
     });
 </script>
 
 <div class="r">
     {#if center}
-        <div>Lon: {center.lon}</div>
-        <div>Lat: {center.lat}</div>
+        <div>Lon: {center.lon.toFixed(6)}</div>
+        <div>Lat: {center.lat.toFixed(6)}</div>
+        <div>LV95 X: {center.x.toFixed(6)}</div>
+        <div>LV95 Y: {center.y.toFixed(6)}</div>
     {/if}
 </div>
 

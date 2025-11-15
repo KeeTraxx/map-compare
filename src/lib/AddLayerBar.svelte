@@ -53,6 +53,12 @@
             <SearchResult {result} onToggle={() => toggleLayer(result)}></SearchResult>
         {/each}
         </ul>
+    {:else}
+        <ul>
+        {#each visibleLayers as result}
+            <SearchResult {result} onToggle={() => toggleLayer(result) showAbstract={false}}></SearchResult>
+        {/each}
+        </ul>
     {/if}
 </div>
 
@@ -63,6 +69,7 @@
         top: 1em;
         display: flex;
         flex-direction: column;
+        box-shadow: 2px 2px 5px 5px rgba(0,0,0,0.3);
     }
 
     input {

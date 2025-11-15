@@ -69,9 +69,41 @@
 </svg>
 <NerdStats {projection}></NerdStats>
 
+<ul class="legend">
+{#each layers as layer}
+    {#if layer.Style.LegendURL}
+        <li>
+            <h6>{layer["ows:Title"]}</h6>
+            <img alt={layer["ows:Identifier"]} src={layer.Style.LegendURL["@_xlink:href"]} />
+        </li>
+    {/if}
+{/each}
+</ul>
+
 <style lang="scss">
     // "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.landeskarte-farbe-10/default/{Time}/3857/{TileMatrix}/{TileCol}/{TileRow}.png"
     svg {
         flex: 1 1 240px;
+    }
+
+    ul {
+        position: fixed;
+        top: 1em;
+        right: 1em;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        > li {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            background: white;
+            padding: 0.5em;
+            border-radius: 0.5em;
+            box-shadow: 2px 2px 5px 5px rgba(0,0,0,0.3);
+        }
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
     }
 </style>

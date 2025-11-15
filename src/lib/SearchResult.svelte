@@ -1,12 +1,12 @@
 <script lang="ts">
     import type { Layer } from "./types";
 
-    let { result, onToggle }: { result: Layer; onToggle: () => void } = $props();
+    let { result, showAbstract, onToggle }: { result: Layer; showAbstract: boolean, onToggle: () => void } = $props();
 </script>
 <li>
     <div class="left">
         <h6>{result["ows:Title"]}</h6>
-        <p>{result["ows:Abstract"]}</p>
+        {#if showAbstract}<p>{result["ows:Abstract"]}</p>{/if}
     </div>
     <div><input type="checkbox" role="switch" checked={result.visible} onchange={onToggle} /></div>
 </li>
@@ -38,6 +38,7 @@ li {
 
     .left {
         max-width: 90%;
+        flex: 1 1;
     }
 }
 

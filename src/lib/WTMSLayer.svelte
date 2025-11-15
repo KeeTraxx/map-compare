@@ -36,8 +36,6 @@
         .scale(projection.scale() * 2 * Math.PI)
     );
 
-    console.log(tiles);
-
     d3.select(el)
       .selectAll<SVGImageElement, [number, number, number]>('image')
       .data<[number, number, number]>(tiles)

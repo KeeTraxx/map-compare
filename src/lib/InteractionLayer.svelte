@@ -1,5 +1,6 @@
 <script lang="ts">
   import { buffer, rewind } from '@turf/turf';
+  import type { Feature } from 'geojson';
   import { mapExtentWGS84, screenToCoords } from './conversion';
   import type { Layer } from './types';
   import { geoPath, type ExtendedFeature, type GeoProjection, geoMercator } from 'd3';
@@ -72,7 +73,7 @@
             [padding, padding],
             [window.innerWidth - padding, window.innerHeight - padding],
           ],
-          rewind(buffer(features[0], 500, { units: 'meters' })!, { reverse: true })
+          rewind(buffer(features[0] as Feature, 500, { units: 'meters' })!, { reverse: true })
         );
       updateProjection?.(p);
     } catch (error) {

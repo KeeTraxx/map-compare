@@ -94,6 +94,7 @@ npm run format
 ## Data Source
 
 This application uses the [Swisstopo WMTS service](https://wmts.geo.admin.ch) for map tiles and layers. Layer metadata is fetched from:
+
 - https://wmts.geo.admin.ch/EPSG/3857/1.0.0/WMTSCapabilities.xml
 
 ## License

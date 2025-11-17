@@ -137,6 +137,7 @@
     stroke: rgba(255, 0, 0, 0.5);
     stroke-width: 10px;
     cursor: pointer;
+    stroke-linecap: round;
   }
 
   .tooltip {

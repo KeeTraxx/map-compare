@@ -95,5 +95,7 @@
     margin: 0;
     padding: 0;
     max-width: 30em;
+    max-height: 70vh;
+    overflow: auto;
   }
 </style>
